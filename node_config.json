@@ -1,7 +1,7 @@
 {
   "bootstrap_nodes": [
     "164.90.151.119:33445",
-    "your_other_server_ip:33445"
+    "134.199.231.129:33445"
   ],
   "discovery_port": 33445,
   "tcp_port": 33445,
