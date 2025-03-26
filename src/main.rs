@@ -794,8 +794,18 @@ fn handle_peer_exchange(
     known_peers: &Arc<Mutex<HashMap<PeerId, PeerInfo>>>,
     peer_file_path: &str,
 ) {
+    // Add debug logging
+    println!("Received peer exchange data: length={}", json_data.len());
+    if json_data.len() < 100 {
+        println!("Data: {}", json_data);
+    } else {
+        println!("Data: {}...", &json_data[0..100]);
+    }
+    
     match serde_json::from_str::<Vec<PeerInfo>>(json_data) {
         Ok(peer_list) => {
+            println!("Successfully parsed peer list with {} peers", peer_list.len());
+            
             let now = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
@@ -819,6 +829,18 @@ fn handle_peer_exchange(
         }
         Err(e) => {
             eprintln!("Failed to parse peer exchange data: {}", e);
+            
+            // Attempt to log a sample of the invalid data
+            if !json_data.is_empty() {
+                let sample = if json_data.len() > 200 {
+                    &json_data[0..200]
+                } else {
+                    json_data
+                };
+                eprintln!("Invalid JSON data sample: {}", sample);
+            } else {
+                eprintln!("Received empty JSON data");
+            }
         }
     }
 }
