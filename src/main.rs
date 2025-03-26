@@ -15,22 +15,24 @@ type PeerId = String;
 struct Config {
     bootstrap_nodes: Vec<String>,
     discovery_port: u16,
+    tcp_port: u16,
     max_hop_count: u32,
-    peer_exchange_interval: u64,  // In seconds
-    maintenance_interval: u64,     // In seconds
+    peer_exchange_interval: u64,
+    maintenance_interval: u64,
 }
 
 impl Default for Config {
     fn default() -> Self {
         Config {
             bootstrap_nodes: vec![
-                "bootstrap1.example.com:8080".to_string(),
-                "198.51.100.1:8080".to_string(),
+                "bootstrap1.example.com:33445".to_string(),
+                "198.51.100.1:33445".to_string(),
             ],
             discovery_port: 33445,
+            tcp_port: 33445,
             max_hop_count: 10,
-            peer_exchange_interval: 60,    // Every minute
-            maintenance_interval: 300,      // Every 5 minutes
+            peer_exchange_interval: 60,
+            maintenance_interval: 300,
         }
     }
 }
@@ -908,7 +910,10 @@ fn main() {
     let config_path = "node_config.json";
     
     // Start a node with the config
-    let node = Arc::new(Node::new("0.0.0.0:0", config_path).unwrap());
+    // Load config first to get the TCP port
+    let config = load_config(config_path);
+    let bind_addr = format!("0.0.0.0:{}", config.tcp_port);
+    let node = Arc::new(Node::new(&bind_addr, config_path).unwrap());
     println!("Node started with ID: {} on address: {}", node.id, node.address);
     
     let node_for_start = Arc::clone(&node);

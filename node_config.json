@@ -1,9 +1,10 @@
 {
   "bootstrap_nodes": [
     "164.90.151.119:33445",
-    "164.90.151.119:33445"
+    "your_other_server_ip:33445"
   ],
   "discovery_port": 33445,
+  "tcp_port": 33445,
   "max_hop_count": 10,
   "peer_exchange_interval": 60,
   "maintenance_interval": 300
